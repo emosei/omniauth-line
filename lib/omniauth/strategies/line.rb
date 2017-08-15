@@ -9,14 +9,8 @@ module OmniAuth
       option :client_options, {
         site: 'https://access.line.me',
         authorize_url: '/dialog/oauth/weblogin',
-        token_url: '/v2/oauth/accessToken'
+        token_url: 'https://api.line.me/v2/oauth/accessToken'
       }
-
-      # host changed
-      def callback_phase
-        options[:client_options][:site] = 'https://api.line.me'
-        super
-      end
 
       uid { raw_info['userId'] }
 
@@ -30,7 +24,7 @@ module OmniAuth
 
       # Require: Access token with PROFILE permission issued.
       def raw_info
-        @raw_info ||= JSON.load(access_token.get('v2/profile').body)
+        @raw_info ||= JSON.load(access_token.get('https://api.line.me/v2/profile').body)
       rescue ::Errno::ETIMEDOUT
         raise ::Timeout::Error
       end
